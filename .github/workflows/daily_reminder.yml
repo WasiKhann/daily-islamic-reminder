@@ -2,15 +2,16 @@ name: Daily Reminder
 
 on:
   schedule:
-    - cron: ''  # Runs daily at 6:00 AM UTC
-  workflow_dispatch:      # Allows manual run
+    - cron: '0 6 * * *'  # 6 AM UTC daily
+  workflow_dispatch:
 
 jobs:
   run-script:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -23,7 +24,7 @@ jobs:
           pip install notion-client
           pip show notion-client
 
-      - name: Run script
+      - name: Run reminder script
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
           NOTION_PAGE_ID: ${{ secrets.NOTION_PAGE_ID }}
@@ -31,5 +32,5 @@ jobs:
           EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
           EMAIL_RECEIVER: ${{ secrets.EMAIL_RECEIVER }}
         run: |
-          echo "🔁 Running send_reminder.py..."
-          python send_reminder.py
+          echo "🔁 Starting script..."
+          python -u send_reminder.py
