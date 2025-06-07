@@ -6,19 +6,21 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import datetime
 
+# Load secrets
 NOTION_TOKEN = os.getenv("NOTION_TOKEN")
 NOTION_PAGE_ID = os.getenv("NOTION_PAGE_ID")
 EMAIL_USER = os.getenv("EMAIL_USER")
 EMAIL_PASS = os.getenv("EMAIL_PASS")
 EMAIL_RECEIVER = os.getenv("EMAIL_RECEIVER")
 
+# Initialize Notion client
 notion = Client(auth=NOTION_TOKEN)
 
 def fetch_plain_text_blocks(page_id):
     blocks = notion.blocks.children.list(page_id).get("results")
     content = []
     for block in blocks:
-        if block["type"] in ["paragraph", "heading_2", "heading_3", "bulleted_list_item", "numbered_list_item"]:
+        if block["type"] in ["paragraph", "heading_1", "heading_2", "heading_3", "bulleted_list_item", "numbered_list_item"]:
             text = block[block["type"]]["rich_text"]
             line = "".join([t["plain_text"] for t in text])
             if line.strip():
